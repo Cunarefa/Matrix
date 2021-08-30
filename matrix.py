@@ -1,47 +1,34 @@
-# mat1.dot(mat2) - умножение
-
-
 import numpy as np
 
 from decorators import check_matching
-from mixins import NumpyMixin
 
 
-class Matrix(NumpyMixin):
-    def __init__(self, matrix1, matrix2):
-        self.matrix1 = matrix1
-        self.matrix2 = matrix2
+class Matrix():
+    def __init__(self, data=None):
+        self.data = self.numpy_data(data)
 
+    def numpy_data(self, data):
+        matrix = np.matrix(data)
+        return matrix
+
+
+class Operations():
+    @staticmethod
     @check_matching
-    def multiple(self):
-        sums_of_elem = [sum(elem) for elem in self.matrix2]
-        if any(sums_of_elem) > 0:
-            self.numpy_matrix(self.matrix1, self.matrix2)
-            return self.mult()
-        else:
-            return np.matrix(self.matrix2)
+    def mult(m1, m2):
+        return m1.dot(m2)
 
+    @staticmethod
     @check_matching
-    def summ(self):
-        self.numpy_matrix(self.matrix1, self.matrix2)
-        return self.summ1()
-
-    @check_matching
-    def minus(self):
-        self.numpy_matrix(self.matrix1, self.matrix2)
-        return self.min()
+    def summ(m1, m2):
+        return m1 + m2
 
 
-zero_lists = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-two_lists = [[1, 2, 3], [4, 5, 6]]
-three_lists = [[4, 28, 5], [8, 87, 19], [3, 29, 4]]
-three_lists2 = [[7, 8, 9], [3, 6, 9], [38, 2, 85]]
-four_lists = [[7, 8, 9], [38, 2, 85], [3, 6, 9], [3, 3, 3]]
+m1 = Matrix()
+m2 = Matrix()
+o = Operations()
 
-mult = Matrix(two_lists, three_lists)
-summ = Matrix(three_lists2, three_lists)
-zero_mult = Matrix(two_lists, zero_lists)
+first_m = m1.numpy_data([[1, 2, 3], [4, 5, 6]])
+second_m = m2.numpy_data([[1, 2, 3], [0, 8, 9], [12, 45, 2]])
 
-print(mult.multiple())
-print()
-print(summ.summ())
+print(o.mult(first_m, second_m))
