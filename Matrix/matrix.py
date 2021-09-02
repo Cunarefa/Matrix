@@ -3,39 +3,29 @@ import numpy as np
 from decorators import check_summ_conditions, check_mult_conditions
 
 
-class Matrix():
+class Matrix(object):
     def __init__(self, data=None):
-        self.data = self.numpy_data(data)
+        self.data = np.matrix(data)
 
-    def numpy_data(self, data):
-        matrix = np.matrix(data)
-        return matrix
-
-
-class Operations():
-    @staticmethod
     @check_mult_conditions
-    def mult(m1, m2):
-        sums_of_elem = [sum(elem) for elem in m2.tolist()]
+    def __mul__(self, other):
+        sums_of_elem = [sum(elem) for elem in other.data.tolist()]
         if any(sums_of_elem) > 0:
-            return m1.dot(m2)
-        return m2
+            return self.data * other.data
+        return other.data
 
-    @staticmethod
     @check_summ_conditions
-    def summ(m1, m2):
-        return m1 + m2
+    def __add__(self, other):
+        return self.data + other.data
+
+    @check_summ_conditions
+    def __sub__(self, other):
+        return self.data - other.data
 
 
-m1 = Matrix()
-m2 = Matrix()
-o = Operations()
+m1 = Matrix([[1, 2, 3], [4, 5, 6]])
+m2 = Matrix([[1, 2, 3], [0, 8, 9], [4, 9, 3]])
 
-list_a = [[1, 2, 3], [4, 5, 6]]
-list_b = [[1, 2, 3], [0, 8, 9], [12, 45, 2]]
-zero_list = np.full(6, 0).reshape(2, 3)
+zero = Matrix([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
 
-first_m = m1.numpy_data(list_a)
-second_m = m2.numpy_data(list_b)
-
-print(o.mult(first_m, second_m))
+m1 + m2
