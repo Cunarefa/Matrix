@@ -12,12 +12,28 @@ class Player():
         self.player = player
 
 
+class Matrix():
+    def __init__(self, size: tuple):
+        self.size = size
+        self.counter = 0
+        self.matrix = np.ndarray(shape=self.size, dtype=object)
+
+    def __next__(self, array):
+        if self.counter < self.size[0] or self.counter < self.size[1]:
+            self.counter += 1
+            return array[self.counter - 1]
+        else:
+            raise StopIteration
+
+    def __iter__(self):
+        return self
+
+
 class Game():
     def __init__(self, desk_size: Tuple, players: List):
         self.desk_size = desk_size
         self.desk = np.ndarray(shape=self.desk_size, dtype=object)
         self.players = players
-        self.coords_list = itertools.product(range(1, self.desk_size[0] + 1), range(1, self.desk_size[1] + 1))
         self.any_won = False
 
     def is_win(self, point):
@@ -32,6 +48,7 @@ class Game():
             return False
 
     def play_game(self):
+        coords_list = list(itertools.product(range(1, self.desk_size[0] + 1), range(1, self.desk_size[1] + 1)))
         player = random.choice(self.players)
         while np.all([i for i in self.desk]) is None:
             try:
@@ -40,15 +57,13 @@ class Game():
                 if player == 'computer':
                     print("Computer is thinking...")
                     time.sleep(2)
-                    coords = random.choice([coordinates for coordinates in self.coords_list])
+                    coords = random.choice(coords_list)
                     print(f"Computer has chosen {coords} coords")
                 else:
                     coords = ast.literal_eval(input(f"Player - {player}, take a shot please: "))
 
                 point = self.desk[coords[0] - 1][coords[1] - 1] = self.players.index(player) + 1
-
-                self.coords_list = list(self.coords_list)
-                self.coords_list.remove(coords)
+                coords_list.remove(coords)
 
                 self.any_won = self.is_win(point)
                 if self.any_won:
@@ -70,3 +85,15 @@ class Game():
 
 f = Game((3, 3), ['John', 'computer'])
 print(f.play_game())
+#
+# f = itertools.product(range(3), range(3))
+# print([i for i in f])
+
+
+
+
+
+
+
+
+
