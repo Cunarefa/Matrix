@@ -1,16 +1,28 @@
+from abc import ABC, abstractmethod
 
-class File():
+
+class Component(ABC):
+    @abstractmethod
+    def get_size(self):
+        pass
+
+    def add_component(self, component):
+        pass
+
+
+class File(Component):
     def __init__(self, size):
         self.size = size
 
     def __add__(self, other):
         return self.size + other.size
 
-    def some(self):
+    @property
+    def get_size(self):
         return self.size
 
 
-class Directory():
+class Directory(Component):
     def __init__(self, components):
         self.components = components
         self.limit = -1
@@ -25,18 +37,24 @@ class Directory():
     # def __iter__(self):
     #     return self
 
-    def some(self):
-        result = []
+    @property
+    def get_size(self):
+        result = 0
         for i in self.components:
-            result.append(i.some())
-        return sum(result)
+            result += i.get_size
+        return result
+
+    def add_component(self, component):
+        self.components.append(component)
 
 
 s = File(50)
 d = File(20)
 q = Directory([s, d])
 dir = Directory([s, q])
-print(dir.some())
+print(dir.get_size, '\n')
+dir.add_component(d)
+print(dir.get_size)
 
 
 
